@@ -1,0 +1,55 @@
+
+
+buildscript {
+	ext {
+		springBootVersion = '2.1.1.RELEASE'
+	}
+	repositories {
+	    maven { url 'http://maven.aliyun.com/nexus/content/groups/public'}
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+plugins {
+  id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+
+
+group = 'com.lowang'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-data-jpa')
+	compile('org.springframework.boot:spring-boot-starter-webflux')
+	runtimeOnly('mysql:mysql-connector-java')
+	compileOnly('org.projectlombok:lombok')
+	testImplementation('org.springframework.boot:spring-boot-starter-test')
+	testImplementation('io.projectreactor:reactor-test')
+	
+	// https://mvnrepository.com/artifact/com.querydsl/querydsl-jpa
+    compile group: 'com.querydsl', name: 'querydsl-jpa', version: '4.2.1'
+    compile group: 'com.querydsl', name: 'querydsl-apt', version: '4.2.1'
+}
+// > gradle :compileQuerydsl
+querydsl {
+  library = 'com.querydsl:querydsl-apt:4.2.1'
+  querydslSourcesDir = 'src/querydsl/java'
+  jpa = true
+  querydslDefault = true
+  aptOptions = []
+}

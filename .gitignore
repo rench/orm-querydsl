@@ -1,14 +1,45 @@
+*~
+*.java.hsp
+*.sonarj
+*.sw*
+.DS_Store
+.settings
+.springBeans
+bin
+logs
+build.sh
+integration-repo
+ivy-cache
+jxl.log
+jmx.log
+derby.log
+*.log
+spring-test/test-output/
 .gradle
-/build/
+argfile*
+pom.xml
+activemq-data/
 
-# Ignore Gradle GUI config
-gradle-app.setting
+/.gradle
+/build
+/*/build
+buildSrc/build
+/spring-*/build
+/src/asciidoc/build
+target/
+/classes
 
-# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle-wrapper.jar
+# Eclipse artifacts, including WTP generated manifests
+.classpath
+.project
+spring-*/src/main/java/META-INF/MANIFEST.MF
 
-# Cache of project
+# IDEA artifacts and output dirs
+*.iml
+*.ipr
+*.iws
+.idea
+out
+test-output
+atlassian-ide-plugin.xml
 .gradletasknamecache
-
-# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
-# gradle/wrapper/gradle-wrapper.properties
