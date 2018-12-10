@@ -2,7 +2,6 @@ package com.lowang.ormquerydsl.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -12,7 +11,7 @@ public class User {
 
   @Id
   // @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @GeneratedValue
+  // @GeneratedValue
   @Column(name = "id")
   protected Long id;
 

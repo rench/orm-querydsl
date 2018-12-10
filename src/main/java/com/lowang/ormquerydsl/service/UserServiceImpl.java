@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.lowang.ormquerydsl.domain.QUser;
 import com.lowang.ormquerydsl.domain.User;
 import com.lowang.ormquerydsl.repository.UserRepository;
+import com.lowang.ormquerydsl.util.Sequence;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import reactor.core.publisher.Flux;
@@ -28,6 +29,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public Mono<User> save(User user) {
+    user.setId(Sequence.get().nextId());
     return Mono.create(cb -> cb.success(r.save(user)));
   }
 
