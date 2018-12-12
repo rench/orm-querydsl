@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.lowang.ormquerydsl.domain.Order;
 import com.lowang.ormquerydsl.repository.OrderRepository;
+import com.lowang.ormquerydsl.util.GlobalIds;
 import com.lowang.ormquerydsl.util.Sequence;
 
 import reactor.core.publisher.Flux;
@@ -32,5 +33,9 @@ public class OrderServiceImpl implements OrderService {
   @Override
   public Flux<Order> findByUserId(Long userId) {
     return Flux.fromIterable(o.findByUserId(userId));
+  }
+  public static void main(String[] args) {
+    for(int i=0;i<500;i++)
+      System.out.println( GlobalIds.nextId().toString() );
   }
 }
