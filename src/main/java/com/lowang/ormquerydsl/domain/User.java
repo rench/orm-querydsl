@@ -1,7 +1,5 @@
 package com.lowang.ormquerydsl.domain;
 
-import java.math.BigInteger;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -14,8 +12,9 @@ public class User {
   @Id
   // @GeneratedValue(strategy = GenerationType.IDENTITY)
   // @GeneratedValue
+  // 可以用string,也可以用bigdecimal
   @Column(name = "id")
-  protected Long id;
+  protected String id;
 
   @Column(name = "name")
   private String name;
@@ -30,12 +29,12 @@ public class User {
   private String address;
 
   /** @return the id */
-  public Long getId() {
+  public String getId() {
     return id;
   }
 
   /** @param id the id to set */
-  public void setId(Long id) {
+  public void setId(String id) {
     this.id = id;
   }
 

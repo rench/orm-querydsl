@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import com.lowang.ormquerydsl.domain.QUser;
 import com.lowang.ormquerydsl.domain.User;
 import com.lowang.ormquerydsl.repository.UserRepository;
-import com.lowang.ormquerydsl.util.Sequence;
+import com.lowang.ormquerydsl.util.GlobalIds;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import reactor.core.publisher.Flux;
@@ -20,7 +20,7 @@ public class UserServiceImpl implements UserService {
   @Autowired UserRepository r;
 
   @Override
-  public Mono<User> findById(Long id) {
+  public Mono<User> findById(String id) {
     return Mono.create(
         cb ->
             cb.success(
@@ -29,8 +29,14 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public Mono<User> save(User user) {
-    user.setId(Sequence.get().nextId());
-    return Mono.create(cb -> cb.success(r.save(user)));
+    user.setId(GlobalIds.nextId().toString());
+    try {
+      final User saved = r.save(user);
+      return Mono.create(cb -> cb.success(saved));
+    } catch (Exception e) {
+      e.printStackTrace();
+      return Mono.create(cb -> cb.error(e));
+    }
   }
 
   @Override
@@ -39,7 +45,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public Mono<User> delete(Long id) {
+  public Mono<User> delete(String id) {
     return Mono.create(
         cb -> {
           Optional<User> u = r.findById(id);

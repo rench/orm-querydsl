@@ -7,11 +7,11 @@ import reactor.core.publisher.Mono;
 
 public interface UserService {
 
-  Mono<User> findById(Long id);
+  Mono<User> findById(String id);
 
   Mono<User> save(User user);
 
   Flux<User> list(User user);
 
-  Mono<User> delete(Long id);
+  Mono<User> delete(String id);
 }

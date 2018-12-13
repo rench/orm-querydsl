@@ -20,7 +20,7 @@ public class UserWebFluxController {
   @Autowired UserService s;
 
   @GetMapping("/{id}")
-  public Mono<User> findById(@PathVariable Long id) {
+  public Mono<User> findById(@PathVariable String id) {
     return s.findById(id);
   }
 
