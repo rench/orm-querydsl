@@ -19,10 +19,12 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   public Mono<Order> createOrder(Order order) {
+    order.setId(Sequence.get().nextId());
     order.setOrderId(Sequence.get().nextId());
     order.setModifiedDate(new Date());
     order.setCreatedDate(new Date());
-    return Mono.create(cb -> cb.success(o.save(order)));
+    final Order save = o.save(order);
+    return Mono.create(cb -> cb.success(save));
   }
 
   @Override
@@ -34,8 +36,8 @@ public class OrderServiceImpl implements OrderService {
   public Flux<Order> findByUserId(Long userId) {
     return Flux.fromIterable(o.findByUserId(userId));
   }
+
   public static void main(String[] args) {
-    for(int i=0;i<500;i++)
-      System.out.println( GlobalIds.nextId().toString() );
+    for (int i = 0; i < 500; i++) System.out.println(GlobalIds.nextId().toString());
   }
 }

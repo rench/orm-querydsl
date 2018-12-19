@@ -73,19 +73,77 @@ public class ShardingConfig {
     }
 
     // user table strategy
-    StandardShardingStrategyConfiguration tableStrategy =
+    StandardShardingStrategyConfiguration tableStrategy = userTable();
+    // user table database strategy
+    StandardShardingStrategyConfiguration dataBaseStrategy = userDatabase();
+    // user table rule
+    TableRuleConfiguration userTable = new TableRuleConfiguration();
+    userTable.setLogicTable("user");
+    userTable.setActualDataNodes("m${0..1}.user");
+    userTable.setDatabaseShardingStrategyConfig(dataBaseStrategy);
+    userTable.setTableShardingStrategyConfig(tableStrategy);
+
+    // order table strategy
+    StandardShardingStrategyConfiguration orderStrategy = orderTable();
+    // order table database strategy
+    StandardShardingStrategyConfiguration orderDataBaseStrategy = orderDatabase();
+    // order table rule
+    TableRuleConfiguration orderTable = new TableRuleConfiguration();
+    orderTable.setLogicTable("order");
+    orderTable.setActualDataNodes("m${0..1}.order${0..1}");
+    orderTable.setDatabaseShardingStrategyConfig(orderDataBaseStrategy);
+    orderTable.setTableShardingStrategyConfig(orderStrategy);
+
+    // sharding rule
+    ShardingRuleConfiguration shardingRuleConfiguration = new ShardingRuleConfiguration();
+    shardingRuleConfiguration.setDefaultDataSourceName("m0");
+    shardingRuleConfiguration.getTableRuleConfigs().add(userTable);
+    shardingRuleConfiguration.getTableRuleConfigs().add(orderTable);
+
+    // sharding datasource
+    DataSource shardingDataSource = null;
+    try {
+      shardingDataSource =
+          ShardingDataSourceFactory.createDataSource(
+              dsMap, shardingRuleConfiguration, new HashMap<>(), new Properties());
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return shardingDataSource;
+  }
+
+  private StandardShardingStrategyConfiguration orderDatabase() {
+    StandardShardingStrategyConfiguration dataBaseStrategy =
         new StandardShardingStrategyConfiguration(
-            "id",
+            "user_id",
             new PreciseShardingAlgorithm<String>() {
               @Override
               public String doSharding(
                   Collection<String> availableTargetNames,
                   PreciseShardingValue<String> shardingValue) {
-                LOG.info(" user table strategy for : " + shardingValue.getValue());
-                return "user";
+                LOG.info(
+                    " order table in database {} strategy for : {} ",
+                    availableTargetNames,
+                    shardingValue.getValue());
+                String database =
+                    availableTargetNames
+                        .stream()
+                        .filter(
+                            (x) ->
+                                x.equals(
+                                    "m"
+                                        + new BigInteger(shardingValue.getValue())
+                                            .mod(BigInteger.valueOf(availableTargetNames.size()))))
+                        .findAny()
+                        .get();
+                LOG.info(" in {} for {} ", database, shardingValue.getValue());
+                return database;
               }
             });
-    // user table database strategy
+    return dataBaseStrategy;
+  }
+
+  private StandardShardingStrategyConfiguration userDatabase() {
     StandardShardingStrategyConfiguration dataBaseStrategy =
         new StandardShardingStrategyConfiguration(
             "id",
@@ -113,27 +171,53 @@ public class ShardingConfig {
                 return database;
               }
             });
-    // user table rule
-    TableRuleConfiguration userTable = new TableRuleConfiguration();
-    userTable.setLogicTable("user");
-    userTable.setActualDataNodes("m${0..1}.user");
-    userTable.setDatabaseShardingStrategyConfig(dataBaseStrategy);
-    userTable.setTableShardingStrategyConfig(tableStrategy);
-    // sharding rule
-    ShardingRuleConfiguration shardingRuleConfiguration = new ShardingRuleConfiguration();
-    shardingRuleConfiguration.setDefaultDataSourceName("m0");
-    shardingRuleConfiguration.getTableRuleConfigs().add(userTable);
+    return dataBaseStrategy;
+  }
 
-    // sharding datasource
-    DataSource shardingDataSource = null;
-    try {
-      shardingDataSource =
-          ShardingDataSourceFactory.createDataSource(
-              dsMap, shardingRuleConfiguration, new HashMap<>(), new Properties());
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return shardingDataSource;
+  private StandardShardingStrategyConfiguration orderTable() {
+    StandardShardingStrategyConfiguration tableStrategy =
+        new StandardShardingStrategyConfiguration(
+            "order_id",
+            new PreciseShardingAlgorithm<Long>() {
+              @Override
+              public String doSharding(
+                  Collection<String> availableTargetNames,
+                  PreciseShardingValue<Long> shardingValue) {
+                LOG.info(
+                    " order table {} strategy for : {} ",
+                    availableTargetNames,
+                    shardingValue.getValue());
+                String table =
+                    availableTargetNames
+                        .stream()
+                        .filter(
+                            (x) ->
+                                x.equals(
+                                    "order"
+                                        + shardingValue.getValue() % availableTargetNames.size()))
+                        .findAny()
+                        .get();
+                LOG.info(" in {} for {} ", table, shardingValue.getValue());
+                return table;
+              }
+            });
+    return tableStrategy;
+  }
+
+  private StandardShardingStrategyConfiguration userTable() {
+    StandardShardingStrategyConfiguration tableStrategy =
+        new StandardShardingStrategyConfiguration(
+            "id",
+            new PreciseShardingAlgorithm<String>() {
+              @Override
+              public String doSharding(
+                  Collection<String> availableTargetNames,
+                  PreciseShardingValue<String> shardingValue) {
+                LOG.info(" user table strategy for : " + shardingValue.getValue());
+                return "user";
+              }
+            });
+    return tableStrategy;
   }
   // @ConfigurationProperties(prefix="spring.ds.m1")
   public static class JdbcConfig {

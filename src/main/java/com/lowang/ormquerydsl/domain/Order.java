@@ -5,8 +5,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -16,7 +14,7 @@ public class Order {
   /** 主键id */
   @Id
   @Column(name = "id")
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  // @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   /** 主键Id */
   @Column(name = "order_id", unique = true)
@@ -29,7 +27,7 @@ public class Order {
   private BigDecimal price;
   /** 用户id */
   @Column(name = "user_id")
-  private Long userId;
+  private String userId;
   /** 创建时间 */
   @Column(name = "created_date")
   private Date createdDate;
@@ -70,11 +68,11 @@ public class Order {
     this.price = price;
   }
   /** @return the userId */
-  public Long getUserId() {
+  public String getUserId() {
     return userId;
   }
   /** @param userId the userId to set */
-  public void setUserId(Long userId) {
+  public void setUserId(String userId) {
     this.userId = userId;
   }
   /** @return the createdDate */

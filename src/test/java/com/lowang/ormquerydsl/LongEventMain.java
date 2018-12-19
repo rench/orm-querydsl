@@ -13,9 +13,9 @@ import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 
 public class LongEventMain {
+  @SuppressWarnings("unused")
   public static void main(String[] args) throws Exception {
-
-    TimeUnit.SECONDS.sleep(10);
+    //TimeUnit.SECONDS.sleep(10);
     // Executor that will be used to construct new threads for consumers
     BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
     ThreadFactory namedThreadFactory =

@@ -1,8 +1,14 @@
 package com.lowang.ormquerydsl.domain;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 @Entity
@@ -27,6 +33,11 @@ public class User {
 
   @Column(name = "address")
   private String address;
+
+  @OneToMany(fetch = FetchType.EAGER)
+  @JoinColumn(name = "user_id")
+  @OrderBy("id asc")
+  private List<Order> orders;
 
   /** @return the id */
   public String getId() {
@@ -76,6 +87,16 @@ public class User {
   /** @param address the address to set */
   public void setAddress(String address) {
     this.address = address;
+  }
+
+  /** @return the orders */
+  public List<Order> getOrders() {
+    return orders;
+  }
+
+  /** @param orders the orders to set */
+  public void setOrders(List<Order> orders) {
+    this.orders = orders;
   }
 
   /* (non-Javadoc)

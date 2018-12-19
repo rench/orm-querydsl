@@ -41,6 +41,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public Flux<User> list(User user) {
+    //如果用JPA查询,那么order表中的主键不能为自增,如果ID一致,会导致混乱
     return Flux.fromIterable(q.select(QUser.user).from(QUser.user).fetch());
   }
 
