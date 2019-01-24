@@ -54,7 +54,7 @@ public class DBTableToJavaBeanUtil {
    * @return
    */
   public static Map<String, String> getDBTableMeta(String table) {
-    Map<String, String> colAndTypes = new HashMap();
+    Map<String, String> colAndTypes = new HashMap<>();
     String sql = "select * from " + table;
     try {
       PreparedStatement statement = connection.prepareStatement(sql);
